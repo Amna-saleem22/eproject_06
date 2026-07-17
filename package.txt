@@ -1,0 +1,29 @@
+install.packages("dplyr")
+install.packages("mongolite")
+install.packages("caret")
+install.packages("randomForest")
+install.packages("shiny")
+install.packages("shinydashboard")
+install.packages("ggplot2")
+install.packages("plotly")
+install.packages("DT")
+
+
+admin
+admin123
+teacher_math
+math123
+
+
+
+show all data student records
+1. Top Core Summary Cards (Key Metrics)
+Table ke bilkul oopar, Admin ko poore school ka nichorh dikhane ke liye hum chote chote dynamic boxes (Value Boxes) bana sakte hain jo automatic calculate honge:
+
+Total Students: Poore data mein total kitne bache hain (jaise aapke paas 608 rows hain).
+
+Overall Pass Rate (%): passFailStatus column se dynamic percentage nikal kar ke kitne % bache pass hain.
+
+Average Attendance: attendancePercentage ka mean (average) nikal kar poore school ki haazri ka status.
+
+Top Performing Class: Kis class ki average percentage sab se zyada hai.
