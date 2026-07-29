@@ -1,5 +1,5 @@
 # ==============================================================================
-# APPLICATION: EduPredict Hub (100% Functional & Fixed Reactive Version)
+# APPLICATION: EduPredict Hub (Full Functional Code with PDF/Excel Export)
 # ==============================================================================
 
 library(shiny)
@@ -7,6 +7,8 @@ library(shinydashboard)
 library(DT)
 library(plotly)
 library(dplyr)
+library(writexl)
+library(rmarkdown)
 
 # ------------------------------------------------------------------------------
 # 1. DATA INGESTION ENGINE WITH SAMPLE FALLBACK
@@ -115,6 +117,8 @@ ui <- fluidPage(
     .dt-container { background: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
     table.dataTable thead th { background-color: #f8fafc !important; color: #475569 !important; font-weight: 600 !important; text-transform: uppercase; font-size: 11px !important; padding: 12px 16px !important; }
     table.dataTable tbody td { padding: 12px 16px !important; color: #334155 !important; font-size: 13px !important; }
+    
+    .export-btn-group { display: flex; gap: 10px; align-items: center; justify-content: flex-end; margin-top: 10px; }
   "))),
   uiOutput("app_container")
 )
@@ -166,11 +170,16 @@ server <- function(input, output, session) {
       dashboardBody(
         fluidRow(
           style = "padding: 10px 5px 0px 5px; margin-bottom: 15px;",
-          column(8, 
+          column(7, 
                  h2("Academic Performance Intelligence Center", style = "margin: 0; font-weight: 700; color: #0f172a;"),
                  p("Institutional predictive analysis framework & executive reporting hub.", style = "color: #64748b; margin-top: 4px;")
           ),
-          column(4, actionButton("logout_btn", "Disconnect", class = "btn-default", style = "float: right; margin-top: 10px; border-radius: 6px; border: 1px solid #cbd5e1;"))
+          column(5, 
+                 div(class = "export-btn-group",
+                     downloadButton("download_excel", " Export Excel", class = "btn btn-success btn-sm", style = "border-radius:6px; font-weight:600;"),
+                     actionButton("logout_btn", "Disconnect", class = "btn-default btn-sm", style = "border-radius: 6px; border: 1px solid #cbd5e1;")
+                 )
+          )
         ),
         
         fluidRow(
@@ -215,8 +224,9 @@ server <- function(input, output, session) {
               box(
                 title = "🎯 Select Student Profile", status = "primary", width = 12,
                 fluidRow(
-                  column(6, selectInput("profile_student_id", "Search or Select Student ID:", choices = sort(unique(as.character(student_data[["studentId"]]))), width = "100%")),
-                  column(6, style = "margin-top: 25px; text-align: right;", uiOutput("ui_risk_badge"))
+                  column(5, selectInput("profile_student_id", "Search or Select Student ID:", choices = sort(unique(as.character(student_data[["studentId"]]))), width = "100%")),
+                  column(3, style = "margin-top: 25px;", downloadButton("download_pdf", " Download PDF Report", class = "btn btn-danger btn-block", style = "border-radius: 6px; font-weight:600;")),
+                  column(4, style = "margin-top: 25px; text-align: right;", uiOutput("ui_risk_badge"))
                 )
               )
             ),
@@ -338,6 +348,48 @@ server <- function(input, output, session) {
     res <- df[as.character(df[["studentId"]]) == as.character(input$profile_student_id), ]
     if (nrow(res) > 0) return(res[1, ]) else return(NULL)
   })
+  
+  # ------------------------------------------------------------------------------
+  # EXPORT HANDLERS (EXCEL & PDF)
+  # ------------------------------------------------------------------------------
+  
+  # 1. Excel Export Handler
+  output$download_excel <- downloadHandler(
+    filename = function() {
+      paste0("EduPredict_Class_Data_", Sys.Date(), ".xlsx")
+    },
+    content = function(file) {
+      data_to_export <- filtered_data()
+      writexl::write_xlsx(data_to_export, path = file)
+    }
+  )
+  
+  # 2. PDF Report Card Handler
+  output$download_pdf <- downloadHandler(
+    filename = function() {
+      paste0("Student_Report_", input$profile_student_id, "_", Sys.Date(), ".pdf")
+    },
+    content = function(file) {
+      id <- showNotification("PDF report generate ho rahi hai...", duration = NULL, closeButton = FALSE)
+      on.exit(removeNotification(id), add = TRUE)
+      
+      tempReport <- file.path(tempdir(), "student_report.Rmd")
+      file.copy("student_report.Rmd", tempReport, overwrite = TRUE)
+      
+      st <- selected_student()
+      
+      params <- list(
+        student_data = st
+      )
+      
+      rmarkdown::render(
+        input = tempReport,
+        output_file = file,
+        params = params,
+        envir = new.env(parent = globalenv())
+      )
+    }
+  )
   
   # ------------------------------------------------------------------------------
   # STUDENT 360° PROFILE OUTPUT LOGIC

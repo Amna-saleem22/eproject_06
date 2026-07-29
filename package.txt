@@ -7,12 +7,12 @@ install.packages("shinydashboard")
 install.packages("ggplot2")
 install.packages("plotly")
 install.packages("DT")
-
+install.packages(c("writexl", "rmarkdown", "knitr"))
 
 admin
 admin123
-teacher_math
-math123
+teacher1
+teacher123
 
 
 
@@ -27,3 +27,18 @@ Overall Pass Rate (%): passFailStatus column se dynamic percentage nikal kar ke 
 Average Attendance: attendancePercentage ka mean (average) nikal kar poore school ki haazri ka status.
 
 Top Performing Class: Kis class ki average percentage sab se zyada hai.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ Advanced Machine Learning & Predictive AnalyticsAt-Risk Student Early Warning System: Logistic Regression ya Random Forest model integrate karke session ke shuru/mid mei hi predict karna ke kon sa student fail hone ya drop out hone ke risk par hai.Grade Prediction Model: Current attendance aur initial test scores ki bunyad par final grade ($A^+$, $A$, $B$, etc.) predict karna.What-If Scenario Simulator: Dynamic sliders ke zariye teacher check kar sake ke "Agar student ki attendance 10% barh jaye ya Maths mei 15 marks barh jayein, toh overall percentage par kya farak parega?"2. Deep Student Insights & Behavioral TrackingSubject Strengths & Weaknesses Classifier: Automatically tag karna ke konsa student "Math Genius", "Needs Remedial Science", ya "Language Specialist" hai.Historical Trend Tracking (Multi-Term Support): Mid-term vs Final-term ya year-over-year performance ko compare karne ke liye time-series trend line graphs.Peer Group Benchmarking: Student 360° profile mei yeh dikhana ke student apni class average aur top 10% average se kahan stand karta hai.3. Automated Communication & NotificationsOne-Click Email Parent Alerts: High-risk student ya kam attendance wale student ke parents ko dashboard se hi direct automated email report bhejney ka button (blastula ya mailR package ke zariye).Automated Actionable Recommendations: Rule-based NLP text generation jo profile tab par teacher ke liye advice likhe (e.g., "Student is weak in Science but strong in Maths. Recommend peer tutoring in Physics.").4. Admin, UX & Data Governance EnhancementsCRUD Operations (Data Entry Interface): Direct Shiny App se naye students ko add, update, ya delete karne ke liye ek interactive editable table (Modal Forms ke sath).Batch PDF Generator: Ek hi click mei puri class ya pure risk-group ke PDF Report Cards zip file mei download karne ka option.Custom Theme & Dark Mode Switcher: Light/Dark theme toggle UI mei add karna.Database Integration: Static .csv file ke bajaye SQLite / PostgreSQL / MySQL database connection add karna taake real-time data read/write ho sake.
